@@ -7,7 +7,6 @@ import ummom.parent.firstTab.MapActivity;
 import ummom.parent.managePage.IDSearch;
 import ummom.parent.managePage.SchoolSearch;
 
-import ummom.login.LoginModel;
 import ummom.login.R;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gms.common.ConnectionResult;
@@ -22,6 +21,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,14 +40,14 @@ public class MainParent extends FragmentActivity {
 	int cnt2;
 	private final static int ID_ACTIVITY = 1;
 	private final static int SCH_ACTIVITY = 2;
-	
+
 	private int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_parent);
 		
-		// GCM 등록 과정
+		// GCM �벑濡� 怨쇱젙
 		if (checkPlayServices()) {
 			GCMRegistrar.checkDevice(this);
 			GCMRegistrar.checkManifest(this);
@@ -61,22 +62,17 @@ public class MainParent extends FragmentActivity {
 				MODE_PRIVATE);
 
 		Log.e("==============", "ID : " + GCM_regId.getString("GCM_regId", ""));
-		// 등록 끝
-		
-		LoginModel model = new LoginModel();
-		
-		SharedPreferences sharedID = getSharedPreferences("loginID", MODE_PRIVATE);
-		
-		model.id = sharedID.getString("loginID", "");
+	
 		
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
-		fragment = new SlidingTabsBasicFragment(model);
+		fragment = new SlidingTabsBasicFragment();
 		transaction.replace(R.id.sample_content_fragment, fragment);
 		transaction.commit();
+		
 	}
 	
-	// GCM 서비스가 가능 여부를 리턴하는 메서드
+	// GCM �꽌鍮꾩뒪媛� 媛��뒫 �뿬遺�瑜� 由ы꽩�븯�뒗 硫붿꽌�뱶
 	private boolean checkPlayServices() {
 	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 	    if (resultCode != ConnectionResult.SUCCESS) {
@@ -219,7 +215,7 @@ public class MainParent extends FragmentActivity {
 			finish();
 		} else {
 			backTime = tempTime;
-			Toast.makeText(MainParent.this, "'뒤로' 버튼을 한번 더 누르시면 종료됩니다.",
+			Toast.makeText(MainParent.this, "'�뮘濡�' 踰꾪듉�쓣 �븳踰� �뜑 �늻瑜댁떆硫� 醫낅즺�맗�땲�떎.",
 					Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -227,7 +223,19 @@ public class MainParent extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		getMenuInflater().inflate(R.menu.login, menu);
+		getMenuInflater().inflate(R.menu.main, menu);
+		getActionBar().setDisplayShowHomeEnabled(false);
+		
+		menu.findItem(R.id.action_person).setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			public boolean onMenuItemClick(MenuItem arg0) {
+				Intent intent =new Intent(getApplicationContext(),ProfileParent.class);
+				startActivity(intent);
+				overridePendingTransition(R.anim.page_appear, R.anim.page_donmove);
+				return true;
+			}
+		});
+		
 		return true;
 
 	}

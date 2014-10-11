@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AlphabetIndexer;
 import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
@@ -18,11 +20,8 @@ public class StudentsListAdapter extends BaseAdapter implements SectionIndexer{
 	
 	private AlphabetIndexer mIndexer;
 	
-	
 	public StudentsListAdapter(Context context){
-		mContext = context;
-		
-		
+		mContext = context;		
 	}
 
 	public void addItem(StudentsItem it){
@@ -50,8 +49,6 @@ public class StudentsListAdapter extends BaseAdapter implements SectionIndexer{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
-	
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -61,14 +58,13 @@ public class StudentsListAdapter extends BaseAdapter implements SectionIndexer{
 		if (convertView == null) {
 			stuView = new StudentsView(mContext, mItems.get(position));
 		} else {
-			stuView = (StudentsView) convertView;
 			
+			stuView = (StudentsView) convertView;			
 			stuView.setIcon(0, mItems.get(position).getImg());
 			stuView.setText(0, mItems.get(position).getName());
 			stuView.setText(1, mItems.get(position).getBirth());
 			stuView.setText(2, mItems.get(position).getPhone());
-			stuView.setIcon(1,mItems.get(position).getIcon());
-			
+			stuView.setText(3, mItems.get(position).getId());
 		}
 
 		return stuView;

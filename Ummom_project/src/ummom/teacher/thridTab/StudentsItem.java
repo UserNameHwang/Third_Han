@@ -6,16 +6,25 @@ public class StudentsItem {
 	private String birth;
 	private String phone;
 	private int img;
-	private int icon;
+	private String id;
 	
-	public StudentsItem(int img, String name,String birth, String phone, int icon){
+	public StudentsItem(String id, int img, String name,String birth, String phone){
 		this.name = name;
 		this.birth = birth;
 		this.phone = phone;
 		this.img = img;
-		this.icon = icon;
+		this.id = id;
 	}
 	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+
 	public String getName() {
 		return name;
 	}
@@ -42,16 +51,5 @@ public class StudentsItem {
 	public void setImg(int img) {
 		this.img = img;
 	}
-
-	public int getIcon() {
-		return icon;
-	}
-
-	public void setIcon(int icon) {
-		this.icon = icon;
-	}
-	
-	
-	
 
 }

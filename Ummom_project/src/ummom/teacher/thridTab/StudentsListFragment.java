@@ -16,6 +16,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import ummom.login.R;
 
@@ -31,6 +35,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class StudentsListFragment extends Fragment{
 	
@@ -53,7 +58,7 @@ public class StudentsListFragment extends Fragment{
 		listView = (ListView) view.findViewById(R.id.listView);		
 		adapter = new StudentsListAdapter(view.getContext());
 		
-		btn = (Button) view.findViewById(R.id.testBtn);
+		/*btn = (Button) view.findViewById(R.id.testBtn);
 		
 		btn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -61,56 +66,46 @@ public class StudentsListFragment extends Fragment{
 				// TODO Auto-generated method stub
 				addAdapter();				
 			}
-		});
+		});	*/
 		
-		int img = R.drawable.sample_view;
-		adapter.addItem(new StudentsItem(img, "김인창", 
-				"91.02.27", "010-3306-5990", R.drawable.info_grey));
+		ThreadStudentsList threadlist = new ThreadStudentsList();
 		
-		int img2 = R.drawable.sample_view1;
-		adapter.addItem(new StudentsItem(img2, "황두연", 
-				"92.02.27", "010-3306-5990", R.drawable.info_grey));
+		threadlist.start();
 		
-		int img3 = R.drawable.sample_view2;
-		adapter.addItem(new StudentsItem(img3, "김준석", 
-				"91.02.27", "010-3306-5990", R.drawable.info_grey));
+		try {
+			threadlist.join();
+			listView.setAdapter(adapter);			
+			listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {					
+					// TODO Auto-generated method stub
+					StudentsView sView = (StudentsView) v;
+					TextView regId = (TextView)sView.findViewById(R.id.reg_id);
+					Log.d("", "RegId : " +  regId.getText().toString());
+					
+					Intent intent = new Intent(frag, StudentsDetail.class);
+					intent.putExtra("regId", regId.getText().toString());
+					startActivity(intent);					
+					frag.overridePendingTransition(R.anim.page_appear, R.anim.page_donmove);
+				}
+			});
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		int img4 = R.drawable.sample_view3;
-		adapter.addItem(new StudentsItem(img4, "한민지", 
-				"91.02.27", "010-3306-5990", R.drawable.info_grey));
 		
-		int img5 = R.drawable.sample_view4;
-		adapter.addItem(new StudentsItem(img5, "박근언", 
-				"91.02.27", "010-3306-5990", R.drawable.info_grey));
 		
-		adapter.addItem(new StudentsItem(img, "김인창", 
-				"91.02.27", "010-3306-5990", R.drawable.info_grey));		
-		
-		listView.setAdapter(adapter);
-		
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(frag, StudentsDetail.class);				
-				
-				startActivity(intent);
-				frag.overridePendingTransition(R.anim.page_appear, R.anim.page_donmove);
-			}
-		});
 		return view;
 	}
 	
-	public void addAdapter(){
-		
+	public void addAdapter(){		
 		int img5 = R.drawable.sample_view4;
-		adapter.addItem(new StudentsItem(img5, "김동은2", 
-				"91.02.27", "010-3306-5990", R.drawable.info_grey));
+		/*adapter.addItem(new StudentsItem(img5, "김동은2", 
+				"91.02.27", "010-3306-5990"));*/
 		
 		listView.setAdapter(adapter);
-		view.invalidate();
-		
+		view.invalidate();		
 	}
 	
 	class ThreadStudentsList extends Thread{
@@ -119,7 +114,7 @@ public class StudentsListFragment extends Fragment{
 			// TODO Auto-generated method stub
 			
 			HttpClient client = new DefaultHttpClient();
-			String path = "http://14.63.212.236/index.php/api_c/register";
+			String path = "http://14.63.212.236/index.php/teacher/getStudentsList";
 			
 			HttpPost post = new HttpPost(path);
 			HttpConnectionParams.setConnectionTimeout(client.getParams(), 30000);
@@ -127,8 +122,7 @@ public class StudentsListFragment extends Fragment{
 			String id = "test";
 			
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("mb_id", id));
-					
+			params.add(new BasicNameValuePair("mb_id", id));					
 
 			UrlEncodedFormEntity ent;
 			try {
@@ -136,6 +130,24 @@ public class StudentsListFragment extends Fragment{
 				post.setEntity(ent);
 				HttpResponse httpResponse = client.execute(post);
 				HttpEntity resEn = httpResponse.getEntity();
+				String parse = EntityUtils.toString(resEn);
+				
+				JSONObject object = new JSONObject(parse);
+				
+				JSONArray array = object.getJSONArray("studentsList");
+				
+				int img5 = R.drawable.sample_view4;
+				for(int i=0; i < array.length() ; i++){
+					JSONObject tmp =  array.getJSONObject(i);
+					String birth = tmp.get("mb_birth").toString();					
+					String mb_birth[] = birth.substring(2, birth.length()).split("-");
+					
+					adapter.addItem(new StudentsItem(tmp.get("reg_id").toString() ,img5, tmp.get("mb_name").toString()
+							, mb_birth[0]+"."+mb_birth[1]+"."+mb_birth[2]
+							, tmp.get("mb_phone").toString() ));
+				}
+				
+				
 				
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
@@ -144,6 +156,9 @@ public class StudentsListFragment extends Fragment{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

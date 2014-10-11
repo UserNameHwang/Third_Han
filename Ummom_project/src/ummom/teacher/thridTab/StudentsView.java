@@ -25,6 +25,7 @@ public class StudentsView extends LinearLayout{
 	private TextView birth;
 	private TextView phone;
 	private ImageView mIcon2;
+	private TextView regId;
 	
 	public StudentsView(Context context, StudentsItem mItem) {
 		super(context);
@@ -48,8 +49,9 @@ public class StudentsView extends LinearLayout{
 		phone.setText(mItem.getPhone());
 		
 		mIcon2 = (ImageView) findViewById(R.id.next_icon);
-		Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), mItem.getIcon());
-		mIcon2.setImageBitmap(getRoundedCornerBitmap(bitmap2));
+		
+		regId = (TextView)findViewById(R.id.reg_id);
+		regId.setText(mItem.getId());
 		
 	}
 	
@@ -60,7 +62,11 @@ public class StudentsView extends LinearLayout{
 			birth.setText(data);
 		} else if (index == 2) {
 			phone.setText(data);
-		} else {
+		}else if (index == 3) {
+			regId.setText(data);
+		} 
+		
+		else {
 			throw new IllegalArgumentException();
 		}
 	}

@@ -55,11 +55,7 @@ public class SlidingTabsBasicFragment extends Fragment {
 
 	private String loginID;
 	private String teacherID = "";
-	
-	public SlidingTabsBasicFragment(LoginModel model) {
-		// TODO Auto-generated constructor stub
-		this.loginID = model.id;
-	}
+
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

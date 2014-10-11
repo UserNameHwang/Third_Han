@@ -80,6 +80,10 @@
         <activity android:name="ummom.parent.managePage.SchoolSearch"></activity>
         <activity android:name="ummom.teacher.thridTab.StudentsDetail"></activity>
         
+        <activity android:name="ummom.parent.common.ProfileParent"></activity>
+        <activity android:name="ummom.teacher.mainsliding.ProfileTeacher"></activity>
+        <activity android:name="ummom.child.common.ProfileChild"></activity>
+        
     </application>
 
 </manifest>
