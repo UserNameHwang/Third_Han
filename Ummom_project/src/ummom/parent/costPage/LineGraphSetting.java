@@ -1,6 +1,7 @@
 package ummom.parent.costPage;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -160,16 +161,31 @@ public class LineGraphSetting {
 				StringCalc calc = new StringCalc();
 				
 				for (int i=0; i<5; i++) {
-					
 					JSONArray arrayData = cost_info.getJSONArray(i);
 					JSONObject data = arrayData.getJSONObject(0);
 					
-					if( data.get("expense").equals("No_data"))
-						continue;
-
-					lastMonth = data.getString("MONTH(reg_month)");
 					String sum = "0원";
 					String month = "";
+					
+					HashMap<String, String> value = new HashMap<String, String>();
+
+					if( data.get("expense").equals("No_data"))
+					{
+						Calendar cal = Calendar.getInstance();
+						if( cal.get(Calendar.MONTH)-3+i == 0 )
+							month = 1 + "";
+						else
+							month = cal.get(Calendar.MONTH)-3+i + "";
+						value.put(month, 0+"");
+						cost_array.add(value);
+
+						Log.e("if_msg", i+", "+month+", "+sum);
+
+						continue;
+					}
+
+					lastMonth = data.getString("MONTH(reg_month)");
+					
 					for( int j=0; j<arrayData.length(); j++)
 					{
 						JSONObject objectData = arrayData.getJSONObject(j);
@@ -183,10 +199,9 @@ public class LineGraphSetting {
 					sum = sum.substring(0, sum.length() - 1);
 					sum = sum.replace(",", "");
 					
-					HashMap<String, String> value = new HashMap<String, String>();
 					value.put(month, sum);
 					
-					Log.e("msg", month+", "+sum);
+					Log.e("msg", i+", "+month+", "+sum);
 					
 					cost_array.add(value);
 				}

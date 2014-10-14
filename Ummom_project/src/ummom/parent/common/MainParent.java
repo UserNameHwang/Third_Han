@@ -47,7 +47,7 @@ public class MainParent extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_parent);
 		
-		// GCM �벑濡� 怨쇱젙
+		// GCM 서비스 등록 코드 반환
 		if (checkPlayServices()) {
 			GCMRegistrar.checkDevice(this);
 			GCMRegistrar.checkManifest(this);
@@ -72,7 +72,7 @@ public class MainParent extends FragmentActivity {
 		
 	}
 	
-	// GCM �꽌鍮꾩뒪媛� 媛��뒫 �뿬遺�瑜� 由ы꽩�븯�뒗 硫붿꽌�뱶
+	// GCM 서비스가 가능한지 체크
 	private boolean checkPlayServices() {
 	    int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 	    if (resultCode != ConnectionResult.SUCCESS) {
@@ -215,7 +215,7 @@ public class MainParent extends FragmentActivity {
 			finish();
 		} else {
 			backTime = tempTime;
-			Toast.makeText(MainParent.this, "'�뮘濡�' 踰꾪듉�쓣 �븳踰� �뜑 �늻瑜댁떆硫� 醫낅즺�맗�땲�떎.",
+			Toast.makeText(MainParent.this, "뒤로 버튼을 한 번더 누르시면 종료합니다.",
 					Toast.LENGTH_SHORT).show();
 		}
 	}
